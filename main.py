@@ -101,7 +101,10 @@ def logout():
 
 @app.route("/fun/reg", methods=["POST"])
 def fun_reg():
-    response = requests.get('http://127.0.0.1:5000/fun/reg')
+    username = request.form["login"].encode(encoding=" utf-8", errors=" strict")
+    password = sha256(request.form["password"].encode("utf-8")).hexdigest().encode(encoding=" utf-8", errors=" strict")
+    email = request.form["email"].encode(encoding=" utf-8", errors=" strict")
+    response = requests.post('http://127.0.0.1:5000/fun/reg', data={username, password, email})
     return response.text
 
 
@@ -113,7 +116,12 @@ def login():
 
 @app.route("/fun/login", methods=["POST"])
 def fun_login():
-    response = requests.get('http://127.0.0.1:5000/fun/login')
+    login = request.form['login']
+    # password = sha256(request.form['password'].encode("utf-8")).hexdigest().encode(encoding=" utf-8", errors=" strict")
+    password = request.form['password']
+    response = requests.post('http://127.0.0.1:5000/fun/login', json={"login": login, "password": password})
+    print(login, password)
+    print(response)
     return response.text
 
 
@@ -125,9 +133,9 @@ def create():
 
 @app.route("/fun/create", methods=["POST"])
 def fun_create():
-    response = requests.get('http://127.0.0.1:5000/fun/create')
+    response = requests.post('http://127.0.0.1:5000/fun/create')
     return response.text
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=80, debug=True)
